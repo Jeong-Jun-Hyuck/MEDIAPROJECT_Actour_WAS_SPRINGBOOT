@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.actour.api.mapper.UserMapper">
+	<!-- 
+	<resultMap id="user" type="com.actour.api.dao.User">
+		<result property="id" column="id" />
+		<result property="domain_id" column="dmn_id" />
+		<result property="user_name" column="name" />
+		<result property="extern_key" column="etnl_key" />
+		<result property="auth" column="auth" />
+		<result property="cell_phone" column="cell_phone" />
+		<result property="corp_addr" column="co_addr" />
+		<result property="enter_corp_date" column="etrco_date" />
+	</resultMap>
+	 -->
+	
+	<insert id="insertUser" parameterType="com.actour.api.dao.User">
+		INSERT INTO user (user_name,user_id,user_password,user_email,user_nation,user_sex)
+		VALUES(#{name},#{id},#{password},#{email},#{nation},#{sex});
+	</insert>
+	
+	<select id="login" resultType="java.lang.Integer">
+		SELECT user_system_id FROM user where user_id=#{id} and user_password = #{password};
+	</select>
+	
+	<select id="loginForId" resultType="java.lang.String">
+		SELECT user_id FROM user where user_system_id=#{systemId}
+	</select>
+	
+	<select id="isUserPossible" resultType="java.lang.Integer">
+		SELECT count(*) FROM user where user_id=#{id};
+	</select>
+	
+</mapper>
