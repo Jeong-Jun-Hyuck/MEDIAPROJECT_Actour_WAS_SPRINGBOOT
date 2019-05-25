@@ -2,34 +2,108 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
 	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.actour.api.mapper.UserMapper">
-	<!-- 
-	<resultMap id="user" type="com.actour.api.dao.User">
-		<result property="id" column="id" />
-		<result property="domain_id" column="dmn_id" />
-		<result property="user_name" column="name" />
-		<result property="extern_key" column="etnl_key" />
-		<result property="auth" column="auth" />
-		<result property="cell_phone" column="cell_phone" />
-		<result property="corp_addr" column="co_addr" />
-		<result property="enter_corp_date" column="etrco_date" />
-	</resultMap>
-	 -->
-	
+	<!-- <resultMap id="user" type="com.actour.api.dao.User"> <result property="id" 
+		column="id" /> <result property="domain_id" column="dmn_id" /> <result property="user_name" 
+		column="name" /> <result property="extern_key" column="etnl_key" /> <result 
+		property="auth" column="auth" /> <result property="cell_phone" column="cell_phone" 
+		/> <result property="corp_addr" column="co_addr" /> <result property="enter_corp_date" 
+		column="etrco_date" /> </resultMap> -->
+		
+		<resultMap id="userForRecommandResultMap" type="com.actour.api.dao.UserForRecommand">
+		  <result property="systemId" column="user_system_id" />
+		  <result property="userName" column="user_name"/>
+		  <result property="adventure" column="adventure"/>
+		  <result property="eater" column="eater"/>
+		  <result property="photo" column="photo"/>
+		  <result property="actor" column="actor"/>
+		  <result property="healing" column="healing"/> 
+		</resultMap>
+		
+		<resultMap id="productForRecommandResultMap" type="com.actour.api.dao.ProductModelForRecommand">
+		  <result property="id" column="product_id" />
+		  <result property="title" column="product_title"/>
+		  <result property="date" column="product_date" />
+		  <result property="nation" column="product_nation" />
+		  <result property="totlaTime" column="product_time"/>
+		  <result property="money" column="product_money" />
+		  <result property="ownerId" column="product_owner"/>
+		  <result property="adventure" column="adventure"/>
+		  <result property="eater" column="eater"/>
+		  <result property="photo" column="photo"/>
+		  <result property="actor" column="actor"/>
+		  <result property="healing" column="healing"/>  
+		</resultMap>
+
 	<insert id="insertUser" parameterType="com.actour.api.dao.User">
-		INSERT INTO user (user_name,user_id,user_password,user_email,user_nation,user_sex)
+		INSERT INTO user
+		(user_name,user_id,user_password,user_email,user_nation,user_sex)
 		VALUES(#{name},#{id},#{password},#{email},#{nation},#{sex});
 	</insert>
 	
+	<select id="getUserForRecommand" resultMap="userForRecommandResultMap">
+		SELECT user_system_id,user_name,adventure,eater,photo,actor,healing
+		from user where user_system_id =#{systemId};
+	</select>
+	
+	
+	
+	<select id="getProductList" resultMap="productForRecommandResultMap">
+		
+		SELECT 
+		product_id,
+		product_title,
+		product_date,
+		product_nation,
+		product_time,
+		product_money,
+		product_owner,
+		adventure,eater,photo,actor,healing
+		from products
+		where ${gerne} between #{point1} and #{point2}
+		
+	</select>
+
 	<select id="login" resultType="java.lang.Integer">
-		SELECT user_system_id FROM user where user_id=#{id} and user_password = #{password};
+		SELECT user_system_id FROM user
+		where user_id=#{id} and user_password = #{password};
 	</select>
-	
+
 	<select id="loginForId" resultType="java.lang.String">
-		SELECT user_id FROM user where user_system_id=#{systemId}
+		SELECT user_id FROM user
+		where user_system_id=#{systemId}
 	</select>
-	
+
 	<select id="isUserPossible" resultType="java.lang.Integer">
-		SELECT count(*) FROM user where user_id=#{id};
+		SELECT count(*) FROM user
+		where user_id=#{id};
 	</select>
-	
+
+	<update id="updateProduct"
+		parameterType="com.actour.api.dao.ProductModel">
+		update products
+		SET
+		`product_title` = #{title},
+		`product_date` = #{date},
+		`product_nation` = #{nation},
+		`product_time` = #{totlaTime},
+		product_money=#{money},
+		product_owner=#{ownerId}
+		WHERE `product_id` = #{id};
+
+	</update>
+
+	<insert id="getNewID" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO products() VALUES ();
+	</insert>
+
+	<insert id="insertCourses" parameterType="java.util.List">
+		INSERT INTO
+		courses(`name`,`price`,`caution`,`details`,`time`,`productId`,`index`)
+		VALUES
+		<foreach collection="list" index="idx" item="item"
+			separator=",">
+			(#{item.courseName},#{item.coursePrice},#{item.caution},#{item.details},#{item.courseTime},#{item.productId},#{item.index})
+		</foreach>
+	</insert>
+
 </mapper>
